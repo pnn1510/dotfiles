@@ -19,8 +19,7 @@ in
     gh        # github cli
     uv        # python package manager
     tmux      # terminal multiplexer
-    # the font everything renders in
-    nerd-fonts.hack
+    nerd-fonts.hack # the font everything renders in
     databricks-cli
     vscode
     dbeaver-bin
@@ -32,6 +31,7 @@ in
     gopls
     golangci-lint
     claude-code
+    peco 
   ];
   fonts.fontconfig.enable = true;
   home.sessionVariables.EDITOR = "nvim";
@@ -41,7 +41,8 @@ in
     autosuggestion.enable = true;      # ghost text from history
     syntaxHighlighting.enable = true;  # commands turn green when valid
     initContent = ''
-      bindkey '^f' autosuggest-accept
+      bindkey '^f' autosuggest-accept 
+      bindkey '^r' peco-select-history
     '';
     shellAliases = {
       ".." = "cd ..";
@@ -52,6 +53,21 @@ in
       cc = "claude --dangerously-skip-permissions";
       co = "codex --full-auto";
     };
+    # Automatically handles downloading, naming, and sourcing the custom OMZ plugin
+      plugins = [
+      {
+        name = "zsh-peco-history";
+        src = pkgs.fetchFromGitHub {
+          owner = "jimeh";
+          repo = "zsh-peco-history";
+          rev = "master"; # Or a specific commit hash for strict reproducibility
+          sha256 = "sha256-lEgisjuLrnetIUG0fXl9vH3/ZHgpyQviy7rJazCkMTs="; 
+          # Tip: Leave the hash blank or wrong at first; Nix will error out and give you the correct one.
+        };
+        file = "zsh-peco-history.zsh";
+      }
+    ];
+
   };
 
   programs.starship = {

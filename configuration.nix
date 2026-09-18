@@ -47,7 +47,6 @@
       "npm"
       "openjdk@11"
       "openjdk@17"
-      "peco"
       "qemu"
       "rtk"
       "rust"

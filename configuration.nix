@@ -56,6 +56,7 @@
       "yq"
     ];
     casks = [
+      "nikitabobko/tap/aerospace"
       "ghostty"
     ];
   };

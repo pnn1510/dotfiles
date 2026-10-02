@@ -54,6 +54,8 @@
       "unixodbc"
       "yarn"
       "yq"
+      "herdr"
+      "gradle"
     ];
     casks = [
       "nikitabobko/tap/aerospace"

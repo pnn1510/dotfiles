@@ -30,19 +30,37 @@ in
     go
     gopls
     golangci-lint
+    # java: 17 is default on PATH/JAVA_HOME; switch with `jdk 11|17|21`
+    # distinct priorities avoid buildEnv collisions between the three jdks
+    (lib.lowPrio openjdk11)
+    openjdk21
+    (lib.hiPrio openjdk17)
     claude-code
     peco 
   ];
   fonts.fontconfig.enable = true;
   home.sessionVariables.EDITOR = "nvim";
+  home.sessionVariables.JAVA_HOME = "${pkgs.openjdk17.home}";
 
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;      # ghost text from history
     syntaxHighlighting.enable = true;  # commands turn green when valid
     initContent = ''
-      bindkey '^f' autosuggest-accept 
+      bindkey '^f' autosuggest-accept
       bindkey '^r' peco-select-history
+
+      # Switch java versions: jdk 11 | 17 | 21
+      jdk() {
+        case "$1" in
+          11) export JAVA_HOME="${pkgs.openjdk11.home}" ;;
+          17) export JAVA_HOME="${pkgs.openjdk17.home}" ;;
+          21) export JAVA_HOME="${pkgs.openjdk21.home}" ;;
+          *) echo "usage: jdk 11|17|21" >&2; return 1 ;;
+        esac
+        export PATH="$JAVA_HOME/bin:$PATH"
+        echo "JAVA_HOME -> $JAVA_HOME ($(java -version 2>&1 | head -1))"
+      }
     '';
     shellAliases = {
       ".." = "cd ..";

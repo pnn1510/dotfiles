@@ -45,8 +45,6 @@
       "lazygit"
       "lima-additional-guestagents"
       "npm"
-      "openjdk@11"
-      "openjdk@17"
       "qemu"
       "rtk"
       "rust"

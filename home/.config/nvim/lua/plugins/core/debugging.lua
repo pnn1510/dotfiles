@@ -1,3 +1,5 @@
+local js_filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" }
+
 return {
   "mfussenegger/nvim-dap",
   dependencies = { "rcarriga/nvim-dap-ui", "nvim-neotest/nvim-nio", "leoluz/nvim-dap-go" },
@@ -20,6 +22,19 @@ return {
     end
     vim.keymap.set("n", "<Leader>dt", dap.toggle_breakpoint, {})
     vim.keymap.set("n", "<Leader>dc", dap.continue, {})
+  end,
+  opts = function()
+    local dap = require("dap")
+    for _, ft in ipairs(js_filetypes) do
+      dap.configurations[ft] = dap.configurations[ft] or {}
+      table.insert(dap.configurations[ft], {
+        type = "pwa-chrome",
+        request = "launch",
+        name = "Launch Chrome (dev server)",
+        url = "http://localhost:3000", -- Vite default is 5173
+        webRoot = "${workspaceFolder}",
+      })
+    end
   end,
 }
 

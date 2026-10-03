@@ -2,7 +2,8 @@
   "env": {
     "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
-    "CLAUDE_CODE_ATTRIBUTION_HEADER": "0"
+    "CLAUDE_CODE_ATTRIBUTION_HEADER": "0",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "attribution": {
     "commit": "",
@@ -11,10 +12,10 @@
   "permissions": {
     "allow": [
       "Bash(rtk curl *)",
-      "Edit(/.claude/skills/run-agent-harness/**)"
+      "Edit(/.claude/skills/run-agent-harness/**)",
+      "mcp__codegraph__*"
     ]
   },
-  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -26,27 +27,45 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "^(startup|resume|clear|compact|fork)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/phucn/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "codegraph prompt-hook"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
     "type": "command",
-    "command": "bash \"/Users/phucn/.claude/plugins/cache/caveman/caveman/84cc3c14fa1e/hooks/caveman-statusline.sh\""
+    "command": "node ${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hud/omc-hud.mjs"
   },
   "enabledPlugins": {
     "caveman@caveman": true,
-    "superpowers@claude-plugins-official": true
+    "oh-my-claudecode@omc": true,
+    "mcpmarket-me@mcpmarket-me": true,
+    "canva@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "caveman": {
       "source": {
         "source": "github",
         "repo": "JuliusBrussee/caveman"
-      }
-    },
-    "superpowers-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "obra/superpowers-marketplace"
       }
     },
     "anthropic-agent-skills": {
@@ -59,6 +78,12 @@
       "source": {
         "source": "git",
         "url": "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
+      }
+    },
+    "mcpmarket-me": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/phucn/.claude/plugins/mcpmarket-me"
       }
     }
   },

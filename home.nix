@@ -30,37 +30,38 @@ in
     go
     gopls
     golangci-lint
-    # java: 17 is default on PATH/JAVA_HOME; switch with `jdk 11|17|21`
     # distinct priorities avoid buildEnv collisions between the three jdks
-    (lib.lowPrio openjdk11)
-    openjdk21
-    (lib.hiPrio openjdk17)
     claude-code
     peco 
+    openjdk21 # java
   ];
   fonts.fontconfig.enable = true;
+
   home.sessionVariables.EDITOR = "nvim";
-  home.sessionVariables.JAVA_HOME = "${pkgs.openjdk17.home}";
 
   programs.zsh = {
     enable = true;
+    # keep hm's zsh files out of $HOME so they never collide with a
+    # pre-existing ~/.zshrc; hm also writes a ~/.zshenv that sets ZDOTDIR
+    # to point zsh here
+    dotDir = "${config.home.homeDirectory}/.config/zsh";
     autosuggestion.enable = true;      # ghost text from history
     syntaxHighlighting.enable = true;  # commands turn green when valid
+    sessionVariables = {
+      EDITOR = "nvim";
+      JAVA_HOME = "${pkgs.openjdk21}";
+      PATH = "${pkgs.openjdk21}/bin:$PATH";
+    };
     initContent = ''
       bindkey '^f' autosuggest-accept
-      bindkey '^r' peco-select-history
+      # note: the zsh-peco-history plugin binds ^R itself; the widget is
+      # peco_select_history (underscore), and bindkey is a no-op below
+      # if the widget does not exist yet
 
-      # Switch java versions: jdk 11 | 17 | 21
-      jdk() {
-        case "$1" in
-          11) export JAVA_HOME="${pkgs.openjdk11.home}" ;;
-          17) export JAVA_HOME="${pkgs.openjdk17.home}" ;;
-          21) export JAVA_HOME="${pkgs.openjdk21.home}" ;;
-          *) echo "usage: jdk 11|17|21" >&2; return 1 ;;
-        esac
-        export PATH="$JAVA_HOME/bin:$PATH"
-        echo "JAVA_HOME -> $JAVA_HOME ($(java -version 2>&1 | head -1))"
-      }
+      # carried over from the old ~/.zshrc
+      export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$PATH"
+      alias reset_cursor="tput cnorm"
+      precmd() { tput cnorm }
     '';
     shellAliases = {
       ".." = "cd ..";
@@ -115,8 +116,6 @@ in
   # Edit-in-place: the real file stays in my repo, ~/.config just points at it.
   home.file.".config/nvim".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/nvim";
-  home.file.".config/herdr".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/herdr";
   home.file.".config/gh".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/gh";
   home.file.".config/git".source =
@@ -127,12 +126,16 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/uv";
   home.file.".config/ghostty".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/ghostty";
-  home.file.".config/opencode".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/opencode";
+  # opencode and herdr keep runtime state (plugins, node_modules, logs,
+  # session.json) in their ~/.config dirs, so only the config file is linked
+  home.file.".config/opencode/opencode.json".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/opencode/opencode.json";
+  home.file.".config/herdr/config.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/herdr/config.toml";
   home.file.".claude/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.claude/settings.json";
-  home.file.".claude/CLAUDE.md".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
+  # ~/.claude/CLAUDE.md is left alone: oh-my-claudecode regenerates that file
+  # itself, so hm managing it caused a collision on every rebuild
   home.file.".codex/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
 }

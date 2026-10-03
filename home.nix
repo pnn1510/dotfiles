@@ -113,6 +113,7 @@ in
     };
   };
 
+
   # Edit-in-place: the real file stays in my repo, ~/.config just points at it.
   home.file.".config/nvim".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/nvim";
@@ -121,7 +122,9 @@ in
   home.file.".config/git".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/git";
   home.file.".config/tmux".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/tmux";
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/tmux"; 
+  home.file.".tmux.conf".source = 
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/tmux/.tmux.conf";
   home.file.".config/uv".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/uv";
   home.file.".config/ghostty".source =
@@ -138,4 +141,5 @@ in
   # itself, so hm managing it caused a collision on every rebuild
   home.file.".codex/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
+
 }

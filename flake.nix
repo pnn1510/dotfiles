@@ -12,6 +12,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    # catppuccin.url = "github:catppuccin/nix/release-26.05";
   };
 
   outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs }:
@@ -32,7 +33,12 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = { inherit user; };
-            home-manager.users.${user} = import ./home.nix;
+            home-manager.users.${user} = {
+              imports = [
+                ./home.nix
+                # catppuccin.homeModules.catppuccin
+              ];
+            };
           }
         ];
       };

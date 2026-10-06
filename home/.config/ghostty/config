@@ -1,1 +1,8 @@
+# Set the cursor theme
 custom-shader = shaders/cursor_sweep.glsl
+
+# Set background opacity (0.0 is fully transparent, 1.0 is fully opaque)
+background-opacity = 0.75
+
+# Optional: Enable background blur for a frosted glass look (macOS/supported platforms)
+background-blur-radius = 20

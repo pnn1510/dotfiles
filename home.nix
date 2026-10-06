@@ -19,6 +19,7 @@ in
     gh        # github cli
     uv        # python package manager
     tmux      # terminal multiplexer
+    meslo-lgs-nf
     nerd-fonts.hack # the font everything renders in
     databricks-cli
     vscode
@@ -34,6 +35,7 @@ in
     claude-code
     peco 
     openjdk21 # java
+    hurl
   ];
   fonts.fontconfig.enable = true;
 
@@ -45,6 +47,7 @@ in
     # pre-existing ~/.zshrc; hm also writes a ~/.zshenv that sets ZDOTDIR
     # to point zsh here
     dotDir = "${config.home.homeDirectory}/.config/zsh";
+    enableCompletion = true;
     autosuggestion.enable = true;      # ghost text from history
     syntaxHighlighting.enable = true;  # commands turn green when valid
     sessionVariables = {
@@ -52,6 +55,13 @@ in
       JAVA_HOME = "${pkgs.openjdk21}";
       PATH = "${pkgs.openjdk21}/bin:$PATH";
     };
+    oh-my-zsh = {
+      enable = true;
+      plugins = ["git" "sudo"];
+      theme = "ys";
+    };
+    history.ignoreAllDups = true;
+    history.ignorePatterns = ["rm *" "git clone *" "ls *"];
     initContent = ''
       bindkey '^f' autosuggest-accept
       # note: the zsh-peco-history plugin binds ^R itself; the widget is
@@ -88,18 +98,15 @@ in
     ];
 
   };
-
+  # catppuccin.enable = true;
+  # catppuccin.starship = {
+  #   enable = true;
+  #   flavor = "mocha"; # Optional: Only define if you want to override the global flavor
+  # };
   programs.starship = {
     enable = true;
-    settings = {
-      add_newline = false;
-      format = "$directory$git_branch$git_status$cmd_duration$line_break$character";
-      character = {
-        success_symbol = "[❯](purple)";
-        error_symbol = "[❯](red)";
-      };
-      cmd_duration.format = "[$duration]($style) ";
-    };
+    enableZshIntegration = true; 
+    configPath = "${dotfiles}/home/.config/starship.toml";
   };
 
   programs.obsidian = {
@@ -141,5 +148,4 @@ in
   # itself, so hm managing it caused a collision on every rebuild
   home.file.".codex/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
-
 }

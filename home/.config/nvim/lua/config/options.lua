@@ -6,3 +6,4 @@ vim.g.lazyvim_eslint_auto_format = true
 vim.g.lazyvim_python_lsp = "pyright"
 -- Set to "ruff_lsp" to use the old LSP implementation version.
 vim.g.lazyvim_python_ruff = "ruff"
+vim.opt.wildmode = "longest:list,full"

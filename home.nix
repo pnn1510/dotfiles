@@ -16,13 +16,14 @@ in
     jq        # json on the command line
     lazygit
     neovim
+    neovide
     gh        # github cli
     uv        # python package manager
     tmux      # terminal multiplexer
     meslo-lgs-nf
-    nerd-fonts.hack # the font everything renders in
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
     databricks-cli
-    vscode
     dbeaver-bin
     colima
     docker

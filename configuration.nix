@@ -48,16 +48,17 @@
       "qemu"
       "rtk"
       "rust"
-      "starship"
       "unixodbc"
       "yarn"
       "yq"
       "herdr"
       "gradle"
+      "openspec"
     ];
     casks = [
       "nikitabobko/tap/aerospace"
       "ghostty"
+      "betterdisplay"
     ];
   };
 }

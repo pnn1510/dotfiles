@@ -4,7 +4,7 @@ local ollama = { name = "ollama", model = "qwen2.5-coder:7b" }
 
 return {
   -- Inline completion (replaces the old `config = function() setup({}) end`)
-  { "supermaven-inc/supermaven-nvim", event = "InsertEnter", opts = {} },
+  -- { "supermaven-inc/supermaven-nvim", event = "InsertEnter", opts = {} },
 
   -- Chat / inline / cmd against a local Ollama server (default http://localhost:11434,
   -- or $OLLAMA_HOST). Uses the current CodeCompanion schema: `interactions`
@@ -22,6 +22,19 @@ return {
         chat = { adapter = ollama },
         inline = { adapter = ollama },
         cmd = { adapter = ollama },
+      },
+    },
+    mcp = {
+      servers = {
+        -- The function is called once, only when the server is first needed.
+        ["context7"] = function()
+          return {
+            cmd = { "npx", "-y", "@upstash/context7-mcp" },
+            env = {
+              CONTEXT7_API_KEY = os.getenv("CONTEXT7_API_KEY"),
+            },
+          }
+        end,
       },
     },
   },
